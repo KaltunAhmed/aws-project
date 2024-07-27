@@ -100,18 +100,19 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     - Run `sude -i` (This switches to the root user)
     - Run `apt-get install nginx -y`
     - To start the Nginx service and enable it to start at system reboot run: 
+
     ```
     systemctl start nginx 
     
     systemctl enable nginx
-
     ```
 
 6. **Install PHP onto NGINX Server:**  
     - WordPress is a PHP based application. So you will need to install PHP and other required extensions to your server. You can install all of them by running the following command:
 
     ``` 
-    apt-get install php php-cli php-fpm php-mysql php-json     php-opcache php-mbstring php-xml php-gd php-curl -y
+
+    apt-get install php php-cli php-fpm php-mysql php-json php-opcache php-mbstring php-xml php-gd php-curl -y
 
     ```
     - Once all the packages are installed, start the PHP-FPM service and enable it to start at system reboot.
@@ -124,6 +125,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     make sure to run the right version 
     
     systemctl start php8.3-fpm 
+
     systemctl enable php8.3-fpm
     
     ```
@@ -132,12 +134,14 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     - WordPress uses MySQL or MariaDB as a database backend. Here, we will use MariaDB as a database backend. You can install it by running the following command:
     
     ```
+
     apt-get install mariadb-server -y
     
     ```
     - Once the MariaDB is installed, start the MariaDB service and enable it to start at system reboot:
 
     ```
+
     systemctl start mariadb
     systemctl enable mariadb
     
@@ -152,12 +156,14 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     - To create the database run: 
     
     ```
+
     CREATE DATABASE wordpressdb;
     
     ```
     - To create a specific user for WordPress to use run:
     
     ```
+
     GRANT ALL ON wordpressdb.* TO 'wordpressuser'@'localhost' IDENTIFIED BY 'securepassword' WITH GRANT OPTION;
     
     You can change the user name and password if you wish
@@ -166,6 +172,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     -  Next, flush the privileges and exit from the MariaDB with the following command:
     
     ```
+
     FLUSH PRIVILEGES;
     
     EXIT;
@@ -175,22 +182,29 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
 
 9.  **Download WordPress:** 
     - To download WordPress into a specific folder run: 
+
     
     ```
+
     cd /var/www/html
     
     wget https://wordpress.org/latest.tar.gz
+
     ```
 
     - Once downloaded, it is a compressed file. To extract the download run: 
+
     
     ```
+
     tar -xvzf latest.tar.gz
     
     ```
     - To change the ownership and permission of the WordPress directory:
+
     
     ```
+
     chown -R www-data:www-data /var/www/html/wordpress
     
     chmod -R 755 /var/www/html/wordpress
@@ -198,14 +212,17 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     ```
     
     - Rename the WordPress default configuration file using the command below:
+
     
     ```
+
     cd wordpress
     
     cp wp-config-sample.php wp-config.php
     
     ```
     - Edit the WordPress configuration and define your database settings:
+
     
     ```
     nano wp-config.php
@@ -213,6 +230,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     ```
     
     - Change the following lines:
+
     
     ```
     
@@ -241,14 +259,19 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
 10. **Create an Nginx Virtual Host Configuration File:** 
 
     -  To create a new Virtual host inside NGINX, so we need a new config file within NGINX, to do so run: 
+
     
     ```
+
     nano /etc/nginx/conf.d/wordpress.conf
     
     ```
+
     - Add the following lines:
+
     
     ```
+
     server {
     listen 80;
     root /var/www/html/wordpress;
@@ -296,6 +319,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     
     
     ```
+
     server_name 3.250.67.180;
     
     ```
@@ -309,6 +333,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     - If everything is fine, you will get the following output:
     
     ```
+
     nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
     
     nginx: configuration file /etc/nginx/nginx.conf test is successful
@@ -317,19 +342,24 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     
     - Finally, restart the Nginx service to apply the changes:
     
+
     ```
+
     systemctl restart nginx
     
     ```
 
     - To check the Nginx status, run the following command:
     
+
     ```
+
     systemctl status nginx
     
     ```
     
     - You should see the following output:
+    
     
     ```
     
