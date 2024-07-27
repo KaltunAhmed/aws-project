@@ -16,8 +16,6 @@
   - [Step 9: Create an Nginx Virtual Host Configuration File](#step-9-create-an-nginx-virtual-host-configuration-file)
   - [Step 10: Access WordPress Installation](#step-10-access-wordpress-installation)
 - [Conclusion](#conclusion)
-- [Next Steps](#next-steps)
-- [References](#references)
 
 
 ## Overview
