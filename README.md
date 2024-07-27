@@ -34,6 +34,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
 
 1. **Create a VPC with public and private subnets**
    - Go into the AWS consol and search for VPC.
+   
    ![AWS VPC Dashboard](assets/vpc-project/1-aws-vpc-dash.png)
    - On the left side navigation click on `Your VPC's`.
      - By deafult you get an AWS deafult VPC in every region in your AWS account, with a couple subnets for every availabity zone.
@@ -93,6 +94,279 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
      -  Return to AWS and copy the command from the modal, which should look like: `ssh -i private-key.pem ec2-user@your-instance-public-ip`.
      - Run this command in your terminal.
    - You are now connected to your Instance.
+
+5. **Install NGINX onto instance:**  
+    - Ensure you're connected to the EC2 locally 
+    - Run `sude -i` (This switches to the root user)
+    - Run `apt-get install nginx -y`
+    - To start the Nginx service and enable it to start at system reboot run: 
+    ```
+    systemctl start nginx 
+    
+    systemctl enable nginx
+
+    ```
+
+6. **Install PHP onto NGINX Server:**  
+    - WordPress is a PHP based application. So you will need to install PHP and other required extensions to your server. You can install all of them by running the following command:
+
+    ``` 
+    apt-get install php php-cli php-fpm php-mysql php-json     php-opcache php-mbstring php-xml php-gd php-curl -y
+
+    ```
+    - Once all the packages are installed, start the PHP-FPM service and enable it to start at system reboot.
+    - The specific command to start PHP-FPM might vary depending on the PHP version installed.
+    - To check the installed PHP version and the available PHP-FPM services, run:
+    
+    `php -v`
+    
+    ```
+    make sure to run the right version 
+    
+    systemctl start php8.3-fpm 
+    systemctl enable php8.3-fpm
+    
+    ```
+
+7. **Install Database:**  
+    - WordPress uses MySQL or MariaDB as a database backend. Here, we will use MariaDB as a database backend. You can install it by running the following command:
+    
+    ```
+    apt-get install mariadb-server -y
+    
+    ```
+    - Once the MariaDB is installed, start the MariaDB service and enable it to start at system reboot:
+
+    ```
+    systemctl start mariadb
+    systemctl enable mariadb
+    
+    ```
+    
+8. **Create WordPress Database:** 
+
+    - Next, you will need to create a database and user for WordPress. First, log in to the MariaDB with the following command:
+
+    `mysql`
+    
+    - To create the database run: 
+    
+    ```
+    CREATE DATABASE wordpressdb;
+    
+    ```
+    - To create a specific user for WordPress to use run:
+    
+    ```
+    GRANT ALL ON wordpressdb.* TO 'wordpressuser'@'localhost' IDENTIFIED BY 'securepassword' WITH GRANT OPTION;
+    
+    You can change the user name and password if you wish
+
+    ```
+    -  Next, flush the privileges and exit from the MariaDB with the following command:
+    
+    ```
+    FLUSH PRIVILEGES;
+    
+    EXIT;
+    
+    ```
+
+
+9.  **Download WordPress:** 
+    - To download WordPress into a specific folder run: 
+    
+    ```
+    cd /var/www/html
+    
+    wget https://wordpress.org/latest.tar.gz
+    ```
+
+    - Once downloaded, it is a compressed file. To extract the download run: 
+    
+    ```
+    tar -xvzf latest.tar.gz
+    
+    ```
+    - To change the ownership and permission of the WordPress directory:
+    
+    ```
+    chown -R www-data:www-data /var/www/html/wordpress
+    
+    chmod -R 755 /var/www/html/wordpress
+    
+    ```
+    
+    - Rename the WordPress default configuration file using the command below:
+    
+    ```
+    cd wordpress
+    
+    cp wp-config-sample.php wp-config.php
+    
+    ```
+    - Edit the WordPress configuration and define your database settings:
+    
+    ```
+    nano wp-config.php
+    
+    ```
+    
+    - Change the following lines:
+    
+    ```
+    
+    /** The name of the database for WordPress */
+    define( 'DB_NAME', 'wordpressdb' );
+    
+    /** MySQL database username */
+    define( 'DB_USER', 'wordpressuser' );
+    
+    /** MySQL database password */
+    define( 'DB_PASSWORD', 'securepassword' );
+    
+    /** MySQL hostname */
+    define( 'DB_HOST', 'localhost' );
+    
+    /** Database charset to use in creating database tables. */
+    define( 'DB_CHARSET', 'utf8' );
+    
+    ```
+    
+    - Click `CTRL` and `O` to save 
+    - Click `CTRL` and `X` to exit 
+    
+
+    
+10. **Create an Nginx Virtual Host Configuration File:** 
+
+    -  To create a new Virtual host inside NGINX, so we need a new config file within NGINX, to do so run: 
+    
+    ```
+    nano /etc/nginx/conf.d/wordpress.conf
+    
+    ```
+    - Add the following lines:
+    
+    ```
+    server {
+    listen 80;
+    root /var/www/html/wordpress;
+    index index.php index.html;
+    server_name wordpress.example.com;
+    
+    access_log /var/log/nginx/wordpress.access.log;
+    error_log /var/log/nginx/wordpress.error.log;
+    
+    location / {
+    try_files $uri $uri/ =404;
+    }
+    
+    location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/run/php/php7.4-fpm.sock; (CHECK THE PHP VERSION)
+    }
+    
+    location ~ /\.ht {
+    deny all;
+    }
+    
+    location = /favicon.ico {
+    log_not_found off;
+    access_log off;
+    }
+    
+    location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+    }
+    
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+    expires max;
+    log_not_found off;
+    }
+    }
+
+    ```
+    
+    - However; on this line `server_name wordpress.example.com;` you want to set the server name as the one on aws running your instance
+    
+    - Head to your AWS console and locate the running instance. Click on the instance to view its details and find the instance's public IP address. Replace wordpress.example.com with your instance's IP address. It should look like this:
+    
+    
+    ```
+    server_name 3.250.67.180;
+    
+    ```
+    
+    - Also double check the php version is correct
+    
+    -  Save and close the file, then verify the Nginx configuration using the command below:  
+    
+    `nginx -t`
+    
+    - If everything is fine, you will get the following output:
+    
+    ```
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    
+    nginx: configuration file /etc/nginx/nginx.conf test is successful
+    
+    ```
+    
+    - Finally, restart the Nginx service to apply the changes:
+    
+    ```
+    systemctl restart nginx
+    
+    ```
+
+    - To check the Nginx status, run the following command:
+    
+    ```
+    systemctl status nginx
+    
+    ```
+    
+    - You should see the following output:
+    
+    ```
+    
+    ● nginx.service - A high performance web server and a reverse proxy server
+    Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+    Active: active (running) since Wed 2021-11-10 06:55:35 UTC; 6s ago
+    Docs: man:nginx(8)
+    Process: 18475 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 18482 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Main PID: 18490 (nginx)
+    Tasks: 2 (limit: 2353)
+    Memory: 2.6M
+    CGroup: /system.slice/nginx.service
+    ├─18490 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+    └─18491 nginx: worker process
+    
+    Nov 10 06:55:35 ubuntu2004 systemd[1]: Starting A high performance web server and a reverse proxy server...
+    Nov 10 06:55:35 ubuntu2004 systemd[1]: Started A high performance web server and a reverse proxy server.
+    
+    ```
+    
+11.  **Access WordPress Installation:**
+
+     - Enter the instance IP into your browser and you should be greeted with this page: 
+     - Choose your language and continue 
+     - You should then see this page: 
+     - Fill in the form and click `Install WordPress`
+     - Once WordPress has been installed you should see this login page: 
+     
+     
+     - Log in with the credentials set on the last page 
+     
+     
+     - This should log you into your WordPress website 
+     
+     - In the top let corner you should see your website name and an option to `Visit Website`. Click here to see your website!! 
+    
 
 ### Conclusion
 
