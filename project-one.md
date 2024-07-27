@@ -48,7 +48,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
 1. **Create a VPC with public and private subnets**
    - Go into the AWS consol and search for VPC.
    
-   ![AWS VPC Dashboard](assets/vpc-project/1-aws-vpc-dash.png)
+   ![AWS VPC Dashboard](assets/vpc-project/aws-vpc-dash.png)
    - On the left side navigation click on `Your VPC's`.
      - By deafult you get an AWS deafult VPC in every region in your AWS account, with a couple subnets for every availabity zone.
     - In the top right click the `Create VPC` button.
