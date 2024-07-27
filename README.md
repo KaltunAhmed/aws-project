@@ -4,6 +4,25 @@
 
 The goal of this project is to gain proficiency in AWS through multiple projects focused on exploring various resources.
 
+
+# Table of Contents
+
+- [Introduction](#introduction)
+- [Amazon VPC Overview](#amazon-vpc-overview)
+- [Project Setup Steps](#project-setup-steps)
+  - [Step 1: Create a VPC](#step-1-create-a-vpc)
+  - [Step 2: Deploy an EC2 Instance](#step-2-deploy-an-ec2-instance)
+  - [Step 3: Connecting to EC2](#step-3-connecting-to-ec2)
+  - [Step 4: Installing NGINX](#step-4-installing-nginx)
+  - [Step 5: Installing PHP](#step-5-installing-php)
+  - [Step 6: Installing MariaDB](#step-6-installing-mariadb)
+  - [Step 7: Setting Up WordPress](#step-7-setting-up-wordpress)
+  - [Step 8: Configuring NGINX for WordPress](#step-8-configuring-nginx-for-wordpress)
+  - [Step 9: Completing WordPress Installation](#step-9-completing-wordpress-installation)
+- [Conclusion](#conclusion)
+- [Next Steps](#next-steps)
+- [References](#references)
+
 ## Project One: Setting Up a VPC with WordPress
 
 ### Overview
@@ -105,6 +124,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     systemctl start nginx 
     
     systemctl enable nginx
+
     ```
 
 6. **Install PHP onto NGINX Server:**  
@@ -316,6 +336,8 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     - However; on this line `server_name wordpress.example.com;` you want to set the server name as the one on aws running your instance
     
     - Head to your AWS console and locate the running instance. Click on the instance to view its details and find the instance's public IP address. Replace wordpress.example.com with your instance's IP address. It should look like this:
+
+    ![AWS VPC Diagram](assets/vpc-project/instance-ip.png)
     
     
     ```
@@ -359,7 +381,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
     ```
     
     - You should see the following output:
-    
+
     
     ```
     
@@ -384,18 +406,31 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
 11.  **Access WordPress Installation:**
 
      - Enter the instance IP into your browser and you should be greeted with this page: 
+
+     ![AWS VPC Diagram](assets/vpc-project/wordpress-greeting.png)
+
      - Choose your language and continue 
      - You should then see this page: 
+
+     ![AWS VPC Diagram](assets/vpc-project/wordpress-sign-up.png)
+
      - Fill in the form and click `Install WordPress`
+
      - Once WordPress has been installed you should see this login page: 
+
+     ![AWS VPC Diagram](assets/vpc-project/wordpress-login.png)
      
      
      - Log in with the credentials set on the last page 
      
      
-     - This should log you into your WordPress website 
+     - This should log you into your WordPress website: 
+
+     ![AWS VPC Diagram](assets/vpc-project/wordpress-dashboard.png)
      
      - In the top let corner you should see your website name and an option to `Visit Website`. Click here to see your website!! 
+
+     ![AWS VPC Diagram](assets/vpc-project/wordpress-website.png)
     
 
 ### Conclusion
