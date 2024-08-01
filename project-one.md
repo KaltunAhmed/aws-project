@@ -101,8 +101,9 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
         -   Select the VPC that we created earlier.
         -  Choose the appropriate subnet, in this case, `public1`.
         - Assign a public IP address.
-       
-    ![AWS VPC Dashboard](assets/vpc-project/ec2-http-setup.png)
+
+      ![AWS VPC Dashboard](assets/vpc-project/ec2-http-setup.png)
+    
 
    - Keep the storage setting the same.
    - Click the `Launch Instance` button on the right.
