@@ -83,6 +83,7 @@ Every VPC is defined by a CIDR block, which specifies the range of IP addresses 
 
    - Navigate to the EC2 dashboard.
    - Click on `Launch Instance`.
+     
     ![AWS VPC Dashboard](assets/vpc-project/ec2-dash.png)
 
    - Name the instance. For example, `wordpress-server`.
