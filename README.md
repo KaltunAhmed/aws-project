@@ -12,7 +12,3 @@ The goal of this project is to gain proficiency in AWS through multiple projects
 
 ## Projects
 - [Project One: Setting Up a VPC with WordPress](project-one.md)
-
-
-
-
