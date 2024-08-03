@@ -7,6 +7,10 @@ The goal of this project is to gain proficiency in AWS through multiple projects
 
 # Table of Contents
 
+## Notes 
+- [Notes: What is a VPC](vpc-notes.md)
+
+## Projects
 - [Project One: Setting Up a VPC with WordPress](project-one.md)
 
 
